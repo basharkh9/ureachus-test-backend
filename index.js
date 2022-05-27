@@ -24,6 +24,16 @@ app.get("/api/inspections", async (req, res) => {
   const inspections = await Inspection.find().sort(`${sortBy}`);
   res.send({ totalitems: inspections.length, inspections: inspections });
 });
+app.get("/api/inspections/:id", async (req, res) => {
+  const inspection = await Inspection.findById(req.params.id);
+
+  if (!inspection)
+    return res
+      .status(404)
+      .send("The inspection with the given ID was not found.");
+
+  res.send(inspection);
+});
 app.post("/api/inspections", async (req, res) => {
   const { error } = validateInspection(req.body);
   console.log(error);
@@ -42,6 +52,29 @@ app.post("/api/inspections", async (req, res) => {
   });
 
   await inspection.save();
+
+  res.send(inspection);
+});
+
+app.put("/api/inspections/:id", async (req, res) => {
+  const { error } = validateInspection(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const inspection = await Inspection.findByIdAndUpdate(req.params.id, {
+    inspectionNumber: req.body.inspectionNumber,
+    inspectionId: req.body.inspectionId,
+    certificate: req.body.certificate,
+    businessName: req.body.businessName,
+    industrySector: req.body.industrySector,
+    city: req.body.city,
+    inspectionDate: req.body.inspectionDate,
+    inspectionResult: req.body.inspectionResult,
+  });
+
+  if (!inspection)
+    return res
+      .status(404)
+      .send("The Inspection with the given ID was not found.");
 
   res.send(inspection);
 });

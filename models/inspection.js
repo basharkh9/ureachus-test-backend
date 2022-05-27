@@ -16,7 +16,7 @@ const Inspection = mongoose.model(
       required: true,
     },
     certificate: {
-      type: Number,
+      type: String,
       required: true,
     },
     businessName: {
@@ -63,7 +63,7 @@ function validateInspection(inspection) {
     city: Joi.string().min(3).max(255).required(),
     inspectionResult: Joi.string().min(3).max(255).required(),
     inspectionDate: Joi.date().required(),
-    enabled: Joi.boolean().required(),
+    enabled: Joi.boolean(),
   });
 
   return schema.validate(inspection);
